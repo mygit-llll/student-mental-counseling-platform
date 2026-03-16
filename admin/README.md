@@ -1,28 +1,25 @@
 # admin
 
-报料小程序后台
+前端项目运行说明
 
-## Build Setup
+项目介绍
 
-``` bash
-# install dependencies
+本项目为大学生心理辅导系统的后台管理前端部分，基于 Vue2 + Vue Router + Vuex + Element UI 构建。
+
+技术栈  Vue2 + Vue Router + Vuex + Element UI + Axios + Webpack
+
+## 项目运行步骤
+
+```bash
+
+# 1. 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 2.启动开发环境
 npm run dev
 
-# build for production with minification
+# 启动成功后访问：
+http://localhost:9999
+
+# 打包生产环境
 npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
