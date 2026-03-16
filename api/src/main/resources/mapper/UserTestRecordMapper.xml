@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zoctan.api.mapper.UserTestRecordMapper">
+
+    <insert id="insertRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_test_record (user_id, test_id, answers, total_score, result_text)
+        VALUES (
+                   #{userId},
+                   #{testId},
+                   #{answers, typeHandler=com.zoctan.api.core.typehandler.JacksonTypeHandler},
+                   #{totalScore},
+                   #{resultText}
+               )
+    </insert>
+
+    <!-- 根据用户名和 testId 查询单条记录 -->
+    <select id="selectByUserNameAndTestId" resultType="com.zoctan.api.entity.UserTestRecord">
+        SELECT r.*, t.title AS testTitle
+        FROM user_test_record r
+                 JOIN psychological_test t ON r.test_id = t.id
+                 JOIN account a ON r.user_id = a.id
+        WHERE a.name = #{name} AND r.test_id = #{testId}
+        ORDER BY r.created_at DESC
+            LIMIT 1
+    </select>
+
+    <!-- 查询用户所有历史记录 -->
+    <select id="selectHistoryByUserName" resultType="com.zoctan.api.entity.UserTestRecord">
+        SELECT r.*, t.title AS testTitle
+        FROM user_test_record r
+                 JOIN psychological_test t ON r.test_id = t.id
+                 JOIN account a ON r.user_id = a.id
+        WHERE a.name = #{name}
+        ORDER BY r.created_at DESC
+    </select>
+
+</mapper>
