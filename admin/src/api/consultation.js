@@ -58,3 +58,10 @@ export function getSessionById(sessionId) {
   })
 }
 
+export function getEncryptedSessionKey(sessionId) {
+  return request({
+    url: `/api/consult/sessions/${sessionId}/encrypted-key`,
+    method: 'get'
+  })
+}
+

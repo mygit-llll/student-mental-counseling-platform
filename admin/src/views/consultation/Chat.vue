@@ -34,8 +34,10 @@
 </template>
 
 <script>
-import { getMessages, sendMessage, getSessionById } from '@/api/consultation'
-import { encryptAESGCM, decryptAESGCM } from '@/utils/aes-gcm'
+import { getMessages, sendMessage, getSessionById, getEncryptedSessionKey } from '@/api/consultation'
+import { decryptAESGCM } from '@/utils/aes-gcm'
+// 私钥解密工具
+import { importPrivateKey, decryptWithPrivateKey } from '@/utils/rsa-decrypt'
 
 export default {
   name: 'ConsultationChat',
@@ -45,7 +47,7 @@ export default {
       otherName: '对方',
       messages: [],
       inputMessage: '',
-      sessionKey: null,
+      sessionKey: null, // 明文 AES 密钥（256-bit）
       pollTimer: null
     }
   },
@@ -57,37 +59,67 @@ export default {
       return
     }
 
-    // 获取会话详情，确定对方姓名
+    // 获取会话详情（用于显示对方姓名）
+    let session = null
     try {
       const sessionRes = await getSessionById(this.sessionId)
-      if (sessionRes.code === 200) {
-        const session = sessionRes.data
-        const currentUserId = parseInt(this.$store.getters.accountId)
-        console.log('session.userId:', session.userId, typeof session.userId)
-        console.log('store accountId:', this.$store.getters.accountId, typeof this.$store.getters.accountId)
-        console.log('相等吗？', session.userId === currentUserId)
+      if (sessionRes.code !== 200) {
+        throw new Error('获取会话失败')
+      }
+      session = sessionRes.data
 
-        if (session.userId === currentUserId) {
-          // 当前用户是学生，对方是咨询师
-          this.otherName = session.counselorName || '咨询师'
-        } else {
-          // 当前用户是咨询师，对方是学生
-          this.otherName = session.userName || '学生'
-        }
+      const currentUserId = parseInt(this.$store.getters.accountId)
+      if (session.userId === currentUserId) {
+        this.otherName = session.counselorName || '咨询师'
+      } else {
+        this.otherName = session.userName || '学生'
       }
     } catch (e) {
       console.warn('获取会话详情失败:', e)
-      this.otherName = '对方'
-    }
-
-    // 模拟会话密钥（实际应从前端安全存储中获取）
-    this.sessionKey = 'x'.repeat(32)
-
-    if (!this.sessionKey || this.sessionKey.length !== 32) {
-      this.$message.error('会话密钥无效')
+      this.$message.error('无法加载会话信息')
+      this.$router.push('/consultation/list')
       return
     }
 
+    // === 统一：所有用户都通过私钥解密会话密钥 ===
+    let key = null
+    try {
+      // 1. 从后端获取加密的会话密钥（Base64 字符串）
+      const encryptedKeyRes = await getEncryptedSessionKey(this.sessionId)
+      if (encryptedKeyRes.code !== 200 || !encryptedKeyRes.data) {
+        throw new Error('未获取到加密的会话密钥')
+      }
+      const encryptedAesKeyB64 = encryptedKeyRes.data
+
+      // 2. 从 localStorage 获取当前用户的 RSA 私钥
+      const storedKeysStr = localStorage.getItem('user_rsa_keypair')
+      if (!storedKeysStr) {
+        throw new Error('本地私钥缺失，请重新登录')
+      }
+      const storedKeys = JSON.parse(storedKeysStr)
+      if (!storedKeys.privateKey) {
+        throw new Error('私钥数据损坏')
+      }
+
+      // 3. 导入私钥并解密 AES 会话密钥
+      const privateKey = await importPrivateKey(storedKeys.privateKey)
+      const aesKeyBytes = await decryptWithPrivateKey(encryptedAesKeyB64, privateKey)
+      // 验证长度（必须是 32 字节 = 256 位
+      if (aesKeyBytes.length !== 32) {
+        throw new Error(`解密后的密钥长度无效：${aesKeyBytes.length} 字节（应为 32）`)
+      }
+      key = String.fromCharCode(...aesKeyBytes)
+      console.log('密钥类型:', typeof key)
+      console.log('密钥长度:', key.length)
+      console.log('前5字节 char codes:', key.split('').slice(0, 5).map(c => c.charCodeAt(0)))
+    } catch (err) {
+      console.error('解密会话密钥失败:', err)
+      this.$message.error('初始化加密会话失败：' + (err.message || '请重试'))
+      this.$router.push('/consultation/list')
+      return
+    }
+
+    this.sessionKey = key
     await this.loadMessages()
     this.startPolling()
   },
@@ -95,6 +127,7 @@ export default {
     if (this.pollTimer) {
       clearInterval(this.pollTimer)
     }
+    // 注意：不再需要 CLEAR_SESSION_KEY，因为没存 Vuex
   },
   methods: {
     async loadMessages() {
@@ -113,23 +146,19 @@ export default {
             }
           } catch (e) {
             console.warn('解密失败:', e.message)
-            const preview = msg.encryptedContent && msg.encryptedContent.substring(0, 20) || ''
-            decryptedContent = '[解密失败] ' + preview + '...'
+            const preview = (msg.encryptedContent && msg.encryptedContent.substring(0, 20)) || ''
+            decryptedContent = `[解密失败] ${preview}...`
           }
 
           decryptedMessages.push({
             ...msg,
             isSelf: Number(msg.senderId) === currentUserId,
             decryptedContent
-            // 注意：模板中直接用 otherName，无需存 senderName
           })
         }
 
         this.messages = decryptedMessages
         this.scrollToBottom()
-
-        console.log('【聊天消息】', this.messages)
-        console.log('当前用户 ID:', this.$store.getters.userId)
       }
     },
 
@@ -141,6 +170,8 @@ export default {
       }
 
       try {
+        // 注意：这里需要引入 encryptAESGCM
+        const { encryptAESGCM } = await import('@/utils/aes-gcm')
         const encrypted = await encryptAESGCM(this.inputMessage, this.sessionKey)
         await sendMessage(this.sessionId, encrypted)
         this.inputMessage = ''

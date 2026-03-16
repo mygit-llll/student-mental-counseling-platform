@@ -1,12 +1,26 @@
 /**
- * 将文本转为 Uint8Array
+ * AES-GCM 加解密工具（使用 Web Crypto API）
+ * 密钥格式：32 字节原始数据转成的二进制安全字符串（通过 String.fromCharCode）
+ * 加密输出格式：Base64(iv + ciphertext + authTag)
+ */
+
+/**
+ * 将二进制安全字符串（每个字符 charCode = 原始字节）转为 Uint8Array
+ * @param {string} str - 二进制字符串（长度应为 32）
+ * @returns {Uint8Array}
  */
 function strToUint8(str) {
-  return new TextEncoder().encode(str)
+  const buf = new Uint8Array(str.length)
+  for (let i = 0; i < str.length; i++) {
+    buf[i] = str.charCodeAt(i)
+  }
+  return buf
 }
 
 /**
  * 将 Uint8Array 转为 Base64 字符串
+ * @param {ArrayBuffer | Uint8Array} buffer
+ * @returns {string}
  */
 function uint8ToBase64(buffer) {
   let binary = ''
@@ -19,6 +33,8 @@ function uint8ToBase64(buffer) {
 
 /**
  * 将 Base64 字符串转为 Uint8Array
+ * @param {string} base64
+ * @returns {Uint8Array}
  */
 function base64ToUint8(base64) {
   const binary = atob(base64)
@@ -30,12 +46,16 @@ function base64ToUint8(base64) {
 }
 
 /**
- * AES-GCM 加密
- * @param {string} plaintext - 明文
- * @param {string} keyStr - 32字节密钥（字符串形式）
- * @returns {Promise<string>} 格式: base64(iv):base64(encrypted):base64(authTag)
+ * 使用 AES-GCM 加密明文
+ * @param {string} plaintext - 要加密的文本
+ * @param {string} keyStr - 32 字节密钥（二进制安全字符串）
+ * @returns {Promise<string>} Base64 编码的 (iv + ciphertext + authTag)
  */
 export async function encryptAESGCM(plaintext, keyStr) {
+  if (typeof keyStr !== 'string' || keyStr.length !== 32) {
+    throw new Error('密钥必须是长度为 32 的字符串')
+  }
+
   const key = await crypto.subtle.importKey(
     'raw',
     strToUint8(keyStr),
@@ -44,8 +64,8 @@ export async function encryptAESGCM(plaintext, keyStr) {
     ['encrypt']
   )
 
-  const iv = crypto.getRandomValues(new Uint8Array(12)) // 96-bit IV
-  const encoded = strToUint8(plaintext)
+  const iv = crypto.getRandomValues(new Uint8Array(12))
+  const encoded = new TextEncoder().encode(plaintext)
 
   const encrypted = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
@@ -53,37 +73,33 @@ export async function encryptAESGCM(plaintext, keyStr) {
     encoded
   )
 
-  // 分离 authTag（最后16字节）
-  const encryptedBuffer = new Uint8Array(encrypted)
-  const authTag = encryptedBuffer.slice(-16)
-  const ciphertext = encryptedBuffer.slice(0, -16)
+  // 拼接：iv (12) + ciphertextWithTag (n + 16)
+  const result = new Uint8Array(iv.length + encrypted.byteLength)
+  result.set(iv, 0)
+  result.set(new Uint8Array(encrypted), iv.length)
 
-  return [
-    uint8ToBase64(iv),
-    uint8ToBase64(ciphertext),
-    uint8ToBase64(authTag)
-  ].join(':')
+  return uint8ToBase64(result)
 }
 
 /**
- * AES-GCM 解密
- * @param {string} encryptedData - 格式: base64(iv):base64(ciphertext):base64(authTag)
- * @param {string} keyStr - 32字节密钥
- * @returns {Promise<string>} 明文
+ * 使用 AES-GCM 解密
+ * @param {string} encryptedData - Base64 编码的 (iv + ciphertext + authTag)
+ * @param {string} keyStr - 32 字节密钥（二进制安全字符串）
+ * @returns {Promise<string>} 解密后的明文（UTF-8）
  */
 export async function decryptAESGCM(encryptedData, keyStr) {
-  const parts = encryptedData.split(':')
-  if (parts.length !== 3) throw new Error('Invalid encrypted format')
+  if (typeof keyStr !== 'string' || keyStr.length !== 32) {
+    throw new Error('密钥必须是长度为 32 的字符串')
+  }
 
-  const [ivB64, ciphertextB64, authTagB64] = parts
-  const iv = base64ToUint8(ivB64)
-  const ciphertext = base64ToUint8(ciphertextB64)
-  const authTag = base64ToUint8(authTagB64)
+  const full = base64ToUint8(encryptedData)
 
-  // 拼接 ciphertext + authTag
-  const encrypted = new Uint8Array(ciphertext.length + authTag.length)
-  encrypted.set(ciphertext)
-  encrypted.set(authTag, ciphertext.length)
+  if (full.length < 12 + 16) {
+    throw new Error('加密数据太短，无法包含 IV 和 AuthTag')
+  }
+
+  const iv = full.slice(0, 12)
+  const ciphertextWithTag = full.slice(12)
 
   const key = await crypto.subtle.importKey(
     'raw',
@@ -96,7 +112,7 @@ export async function decryptAESGCM(encryptedData, keyStr) {
   const decrypted = await crypto.subtle.decrypt(
     { name: 'AES-GCM', iv },
     key,
-    encrypted
+    ciphertextWithTag // 必须包含 authTag（最后 16 字节）
   )
 
   return new TextDecoder().decode(decrypted)

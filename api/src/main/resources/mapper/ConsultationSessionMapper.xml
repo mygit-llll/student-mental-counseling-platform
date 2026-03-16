@@ -29,4 +29,20 @@
         FROM consultation_session
         WHERE user_id = #{userId} OR counselor_id = #{userId}
     </select>
+
+    <insert id="insertSession" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO consultation_session (
+            user_id,
+            counselor_id,
+            session_key_encrypted,
+            status,
+            created_at
+        ) VALUES (
+                     #{userId},
+                     #{counselorId},
+                     #{sessionKeyEncrypted},
+                     #{status},
+                     #{createdAt}
+                 )
+    </insert>
 </mapper>

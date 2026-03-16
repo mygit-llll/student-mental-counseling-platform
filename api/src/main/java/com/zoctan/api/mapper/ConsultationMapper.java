@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface ConsultationMapper {
-    @Select("SELECT a.id, a.name " +
+    @Select("SELECT a.id, a.name, a.public_key " +  // ← 新增 a.public_key
             "FROM account a " +
             "INNER JOIN account_role ar ON a.id = ar.account_id " +
             "WHERE ar.role_id = #{roleId}")

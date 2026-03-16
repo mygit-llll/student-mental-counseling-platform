@@ -119,6 +119,7 @@ public class ConsultationController {
         dto.setCreatedAt(session.getCreatedAt().toString());
         dto.setUserId(session.getUserId());
         dto.setCounselorId(session.getCounselorId());
+        dto.setSessionKeyEncrypted(session.getSessionKeyEncrypted());
         Account user = accountMapper.selectByPrimaryKey(session.getUserId());
         Account counselor = accountMapper.selectByPrimaryKey(session.getCounselorId());
 
@@ -140,5 +141,29 @@ public class ConsultationController {
         dto.setOtherAvatar(null);
 
         return ResultGenerator.genOkResult(dto);
+    }
+    /**
+     * counselor 获取会话的加密密钥（用于前端本地解密）
+     * 注意：只有该会话的 counselor 才能访问
+     */
+    @GetMapping("/sessions/{sessionId}/encrypted-key")
+    public Result<String> getEncryptedSessionKey(@PathVariable Long sessionId) {
+        Long currentUserId = ContextUtils.getCurrentAccountId();
+        if (currentUserId == null) {
+            return ResultGenerator.genFailedResult("未登录");
+        }
+
+        ConsultationSession session = consultationService.getSessionById(sessionId);
+        if (session == null) {
+            return ResultGenerator.genFailedResult("会话不存在");
+        }
+
+        // 确保当前用户是该会话的 counselor
+        if (!session.getUserId().equals(currentUserId) && !session.getCounselorId().equals(currentUserId)) {
+            return ResultGenerator.genFailedResult("无权访问该会话的密钥");
+        }
+
+        // 返回加密后的会话密钥（Base64 字符串）
+        return ResultGenerator.genOkResult(session.getSessionKeyEncrypted());
     }
 }

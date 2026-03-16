@@ -37,4 +37,7 @@ public class Account {
   @Transient
   private Long roleId;
 
+  /** 公钥 **/
+  private String publicKey;
+
 }

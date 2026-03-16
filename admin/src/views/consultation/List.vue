@@ -18,7 +18,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="startSession(counselor.id)"
+          @click="startSession(counselor)"
         >
           开始咨询
         </el-button>
@@ -33,6 +33,7 @@
 
 <script>
 import { getCounselors, createSession } from '@/api/consultation'
+import { importPublicKey, encryptWithPublicKey } from '@/utils/rsa'
 
 export default {
   name: 'ConsultationList',
@@ -55,22 +56,41 @@ export default {
       }
     },
 
-    async startSession(counselorId) {
-      // TODO: 实际应生成 AES 会话密钥，并用 counselor 的公钥加密
-      // 此处先模拟一个加密后的密钥字符串
-      const mockEncryptedKey = 'enc_K_' + Date.now() + '_simulated_key'
-
+    async startSession(counselor) {
       try {
-        const res = await createSession(counselorId, mockEncryptedKey)
-        if (res.code === 200) {
-          this.$message.success('会话创建成功')
-          this.$router.push(`/consultation/chat/${res.data}`)
-        } else {
-          this.$message.error(res.message || '创建会话失败')
+        // 1. 检查 counselor 是否有公钥
+        if (!counselor.publicKey) {
+          this.$message.error(`咨询师 ${counselor.name} 未配置公钥`)
+          return
         }
+
+        // 2. 生成 32 字节 AES 会话密钥
+        const aesKey = window.crypto.getRandomValues(new Uint8Array(32))
+
+        // 3. 导入 counselor 公钥
+        const publicKey = await importPublicKey(counselor.publicKey)
+
+        // 4. 用公钥加密 AES 密钥
+        const encryptedAesKey = await encryptWithPublicKey(aesKey, publicKey)
+
+        // 5. 调用后端创建会话
+        const res = await createSession(counselor.id, encryptedAesKey)
+        if (res.code !== 200) {
+          throw new Error(res.message || '创建会话失败')
+        }
+
+        // 6.  将原始 AES 密钥存入 Vuex（临时）
+        this.$store.commit('SET_SESSION_KEY', {
+          sessionId: res.data,
+          key: Array.from(aesKey).map(b => String.fromCharCode(b)).join('')
+        })
+
+        // 7. 跳转到聊天页
+        this.$message.success('会话创建成功')
+        this.$router.push(`/consultation/chat/${res.data}`)
       } catch (error) {
         console.error('创建会话异常:', error)
-        this.$message.error('网络错误，请重试')
+        this.$message.error('创建失败：' + (error.message || '请重试'))
       }
     }
   }

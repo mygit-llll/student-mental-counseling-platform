@@ -1,70 +1,51 @@
--- MySQL dump 10.16  Distrib 10.1.26-MariaDB, for debian-linux-gnu (x86_64)
---
--- Host: localhost    Database: admin_dev
--- ------------------------------------------------------
--- Server version	10.1.26-MariaDB-0+deb9u1
+/*
+ Navicat Premium Dump SQL
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE = @@TIME_ZONE */;
-/*!40103 SET TIME_ZONE = '+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
-/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
+ Source Server         : springjdbc
+ Source Server Type    : MySQL
+ Source Server Version : 80041 (8.0.41)
+ Source Host           : localhost:3306
+ Source Schema         : psych
 
---
--- Table structure for table `account`
---
+ Target Server Type    : MySQL
+ Target Server Version : 80041 (8.0.41)
+ File Encoding         : 65001
 
+ Date: 16/03/2026 20:11:37
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for account
+-- ----------------------------
 DROP TABLE IF EXISTS `account`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `account`
-(
-    `id`            bigint(20) unsigned                             NOT NULL AUTO_INCREMENT COMMENT '用户Id',
-    `email`         varchar(64) CHARACTER SET utf8 COLLATE utf8_bin COMMENT '邮箱',
-    `name`          varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '用户名',
-    `password`      varchar(512) CHARACTER SET utf8 COLLATE utf8_bin COMMENT '密码',
-    `register_time` datetime DEFAULT NOW() COMMENT '注册时间',
-    `login_time`    datetime DEFAULT NULL COMMENT '上一次登录时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `ix_account_name` (`name`),
-    UNIQUE KEY `ix_account_email` (`email`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
-  DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `account`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户Id',
+  `email` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '邮箱',
+  `name` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL COMMENT '用户名',
+  `password` varchar(512) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '密码',
+  `register_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+  `login_time` datetime NULL DEFAULT NULL COMMENT '上一次登录时间',
+  `public_key` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT 'RSA 公钥（PEM 格式，用于 E2EE）',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `ix_account_name`(`name` ASC) USING BTREE,
+  UNIQUE INDEX `ix_account_email`(`email` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
---
--- Dumping data for table `account`
---
+-- ----------------------------
+-- Records of account
+-- ----------------------------
+INSERT INTO `account` VALUES (1, 'admin@qq.com', 'admin', '$2a$10$wg0f10n.30UbU.9hPpucbef/ya62LdTKs72xJfjxvTFsL0Xaewbra', '2019-07-01 00:00:00', '2026-03-16 20:09:39', NULL);
+INSERT INTO `account` VALUES (2, 'editor@qq.com', 'editor', '$2a$10$/m4SgZ.ZFVZ7rcbQpJW2tezmuhf/UzQtpAtXb0WZiAE3TeHxq2DYu', '2019-07-02 00:00:00', '2026-03-15 00:15:30', NULL);
+INSERT INTO `account` VALUES (3, 'test@qq.com', 'test', '$2a$10$.0gBYBHAtdkxUUQNg3kII.fqGOngF4BLe8JavthZFalt2QIXHlrhm', '2019-07-03 00:00:00', '2026-03-10 18:12:55', NULL);
+INSERT INTO `account` VALUES (4, '3398178699@qq.com', 'test1', '$2a$10$ryAkNfrdnhuOaUuZHV67Gey14OuBRcrXZCGjcVZ.a8tMXtmkR7kAS', '2026-02-13 02:06:51', NULL, NULL);
+INSERT INTO `account` VALUES (5, 'test2@example.com', 'test2', '$2a$10$aful5cgyO0GcyqVcZCP.tOS6c.3QmWJ/3yN3ynvZP/ywHaPAdhfuK', '2026-03-04 06:09:49', '2026-03-10 17:41:33', NULL);
+INSERT INTO `account` VALUES (6, 'test3@qq.com', 'test3', '$2a$10$b2Pz7PGwewxMbx46AXTsPu6lcwSXLPfL9wJWFR9zM1czHUefQGAXS', '2026-03-04 08:14:44', '2026-03-10 14:01:12', NULL);
+INSERT INTO `account` VALUES (7, 'linyixin54@dmail.com', 'test4', '$2a$10$SDtv400vRs9njan98O/0eum1F2BT0siWgR26MU4o5EEng7Dedsmdq', '2026-03-10 10:10:31', '2026-03-15 21:36:58', NULL);
+INSERT INTO `account` VALUES (8, 'test5@qq.com', 'test5', '$2a$10$7mqa0GJHvmqfJEwU4W5o8.G/bqkF4xxDTzeFzGdee9kHAJh5Kit9K', '2026-03-15 15:25:26', '2026-03-16 00:10:18', NULL);
+INSERT INTO `account` VALUES (9, 'test6@qq.com', 'test6', '$2a$10$NinA1wVPB4xxkkx.ff.OLOsP8iAVIj4uxmBoui/Dcom9hhNHCIXwG', '2026-03-15 16:40:33', '2026-03-16 00:40:48', NULL);
+INSERT INTO `account` VALUES (10, 'test7@qq.com', 'test7', '$2a$10$10q5EGEVxuKtSXRVx2GAuO8fxdMUMNJ5TKEOXPvyaqX9SgtAqYXMu', '2026-03-15 16:46:23', '2026-03-16 20:09:25', '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm8m/1dyeoEfWkkHpkFAs\n3qLXE6qHKtfgrpTI5RdTDMFfWlv2QZTqBm4jrYwGVytM39x1Vk9LfJY1HJISgF0T\n9BYMys3iaKIMH3qRbHW9ErtTENKG/z6LJq/j13hXpkgzbx8qZ4WWAWLL6bLD3itM\nlRMMroOM9werKiKZW3zaphuAifGiTDsoHnvOQs2UnwZtEqxf26RfcxVbZcFRx2ec\nYu5dWAxytBx3RBdXdoHc9F5nhmjIBQ0xZGzJpb68p/2SgxrFpPkxQkQPxG/kEQ27\ny6GpPpe+VZqCxpORjh5DEcB98GlwQ5btBjyAiEhWynHiqy3vEA6HkFKD1xkC0TaO\n2QIDAQAB\n-----END PUBLIC KEY-----');
 
-LOCK TABLES `account` WRITE;
-/*!40000 ALTER TABLE `account`
-    DISABLE KEYS */;
-INSERT INTO `account`
-VALUES (1, 'admin@qq.com', 'admin', '$2a$10$wg0f10n.30UbU.9hPpucbef/ya62LdTKs72xJfjxvTFsL0Xaewbra',
-        '2019-07-01 00:00:00', '2019-07-01 00:00:00');
-INSERT INTO `account`
-VALUES (2, 'editor@qq.com', 'editor', '$2a$10$/m4SgZ.ZFVZ7rcbQpJW2tezmuhf/UzQtpAtXb0WZiAE3TeHxq2DYu',
-        '2019-07-02 00:00:00', '2019-07-02 00:00:00');
-INSERT INTO `account`
-VALUES (3, 'test@qq.com', 'test', '$2a$10$.0gBYBHAtdkxUUQNg3kII.fqGOngF4BLe8JavthZFalt2QIXHlrhm',
-        '2019-07-03 00:00:00', '2019-07-03 00:00:00');
-/*!40000 ALTER TABLE `account`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
-
--- Dump completed on 2018-02-16 19:24:53
+SET FOREIGN_KEY_CHECKS = 1;

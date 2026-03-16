@@ -16,6 +16,15 @@ public class ConsultationSessionDTO {
     private String createdAt;
     private String lastMessage;
 
+    private String sessionKeyEncrypted;
+    public String getSessionKeyEncrypted() {
+        return sessionKeyEncrypted;
+    }
+
+    public void setSessionKeyEncrypted(String sessionKeyEncrypted) {
+        this.sessionKeyEncrypted = sessionKeyEncrypted;
+    }
+
     private Long userId;
     private Long counselorId;
 

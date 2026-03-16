@@ -10,6 +10,7 @@ import com.zoctan.api.dto.AccountWithRole;
 import com.zoctan.api.entity.Account;
 import com.zoctan.api.service.AccountService;
 import com.zoctan.api.service.impl.AccountDetailsServiceImpl;
+import com.zoctan.api.util.ContextUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +36,7 @@ public class AccountController {
   @Resource private AccountDetailsServiceImpl userDetailsService;
   @Resource private JwtUtil jwtUtil;
   @Resource private PasswordEncoder passwordEncoder;
+  @Resource private com.zoctan.api.mapper.AccountMapper accountMapper;
 
   @PostMapping
   public Result register(
@@ -222,5 +224,29 @@ public class AccountController {
 
     this.jwtUtil.invalidRedisToken(principal.getName());
     return ResultGenerator.genOkResult("密码修改成功，请重新登录");
+  }
+  @PostMapping("/public-key")
+  public Result<Void> uploadPublicKey(@RequestBody Map<String, String> payload) {
+    Long currentUserId = ContextUtils.getCurrentAccountId();
+    if (currentUserId == null) {
+      return ResultGenerator.genFailedResult("未登录");
+    }
+
+    String publicKey = payload.get("publicKey");
+    if (publicKey == null || publicKey.trim().isEmpty()) {
+      return ResultGenerator.genFailedResult("公钥不能为空");
+    }
+
+    // 可选：校验是否为 PEM 格式
+    if (!publicKey.contains("BEGIN PUBLIC KEY")) {
+      return ResultGenerator.genFailedResult("公钥格式无效");
+    }
+
+    Account account = new Account();
+    account.setId(currentUserId);
+    account.setPublicKey(publicKey.trim());
+    accountMapper.updateByPrimaryKeySelective(account);
+
+    return ResultGenerator.genOkResult();
   }
 }

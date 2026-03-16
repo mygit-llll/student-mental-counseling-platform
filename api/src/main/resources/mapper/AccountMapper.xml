@@ -9,6 +9,7 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="register_time" jdbcType="TIMESTAMP" property="registerTime"/>
         <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
+        <result property="publicKey" column="public_key"/>
     </resultMap>
 
     <resultMap id="AccountWithRoleMap" type="com.zoctan.api.dto.AccountWithRole" extends="AccountMap">

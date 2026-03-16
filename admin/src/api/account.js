@@ -79,3 +79,15 @@ export function logout() {
     method: 'delete'
   })
 }
+
+/**
+ * 上传用户公钥（用于咨询师）
+ */
+export function uploadPublicKey(publicKey) {
+  return request({
+    url: '/account/public-key',
+    method: 'post',
+    data: { publicKey }
+  })
+}
+

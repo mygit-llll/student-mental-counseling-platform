@@ -10,4 +10,6 @@ public interface ConsultationSessionMapper extends MyMapper<ConsultationSession>
     ConsultationSession findByUserIdAndCounselorId(@Param("userId") Long userId, @Param("counselorId") Long counselorId);
 
     List<ConsultationSession> findByUserIdOrCounselorId(@Param("userId") Long userId);
+
+    void insertSession(ConsultationSession session);
 }
