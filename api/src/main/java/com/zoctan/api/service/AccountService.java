@@ -5,6 +5,7 @@ import com.zoctan.api.dto.AccountDto;
 import com.zoctan.api.dto.AccountWithRole;
 import com.zoctan.api.dto.AccountWithRolePermission;
 import com.zoctan.api.entity.Account;
+import com.zoctan.api.entity.UserTestRecord;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
@@ -84,4 +85,6 @@ public interface AccountService extends Service<Account> {
   List<Long> findRoleIdsByAccountId(Long accountId);
 
   Account findByName(String name);
+
+  AccountWithRole findWithRoleById(Long id);
 }

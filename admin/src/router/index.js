@@ -169,6 +169,32 @@ export const constantRouterMap = [
     component: _import('PsychologicalTest/TakeTest'),
     hidden: true,
     meta: { requiresAuth: true }
+  },
+
+  // 高危监控页
+  {
+    path: '/admin',
+    component: Layout,
+    redirect: '/admin/monitor/high-risk',
+    icon: 'eye',
+    noDropDown: true,
+    meta: { title: '高危监控', role: ['超级管理员'] },
+    children: [
+      {
+        path: 'monitor/high-risk',
+        component: _import('admin/HighRiskMonitor'),
+        name: '高危心理测评监控',
+        meta: { title: '高危监控', noCache: true, roles: ['超级管理员'] }
+      }
+    ]
+  },
+
+  // 用户详情页
+  {
+    path: '/admin/user/:id',
+    component: _import('admin/UserDetail'),
+    hidden: true,
+    meta: { title: '用户详情', roles: ['超级管理员'] }
   }
 ]
 

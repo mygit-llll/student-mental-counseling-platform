@@ -20,4 +20,10 @@ public interface UserTestRecordMapper extends MyMapper<UserTestRecord> {
      * 查询用户的所有测试历史记录
      */
     List<UserTestRecord> selectHistoryByUserName(@Param("name") String username);
+
+
+    List<UserTestRecord> selectByScoreGreaterThan(Integer score);
+
+    List<UserTestRecord> selectHighRiskRecordsWithUsername(Integer threshold);
+
 }

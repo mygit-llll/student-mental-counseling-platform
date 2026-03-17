@@ -8,7 +8,9 @@ import com.zoctan.api.entity.ConsultationMessage;
 import java.util.List;
 
 public interface ConsultationService {
-    Long createSession(Long userId, Long counselorId, String sessionKeyEncrypted);
+    Long createSession(Long userId, Long counselorId,
+                       String encryptedKeyForStudent,
+                       String encryptedKeyForCounselor);
     void sendMessage(Long sessionId, Long senderId, String encryptedContent);
     ConsultationSession getSessionById(Long sessionId);
     boolean isParticipant(Long sessionId, Long accountId);

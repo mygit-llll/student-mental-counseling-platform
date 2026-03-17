@@ -23,4 +23,14 @@ public class UserTestRecordServiceImpl implements UserTestRecordService {
     public List<UserTestRecord> findUserTestHistoryByUsername(String username) {
         return userTestRecordMapper.selectHistoryByUserName(username);
     }
+
+    @Override
+    public List<UserTestRecord> findRecordsWithScoreAbove(Integer score) {
+        return userTestRecordMapper.selectByScoreGreaterThan(score);
+    }
+
+    @Override
+    public List<UserTestRecord> findHighRiskRecordsWithUsername(Integer threshold) {
+        return userTestRecordMapper.selectHighRiskRecordsWithUsername(threshold);
+    }
 }

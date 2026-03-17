@@ -1,6 +1,7 @@
 package com.zoctan.api.core.response;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,12 +12,15 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "响应结果")
 public class Result<T> {
   @ApiModelProperty(value = "状态码")
+  @JsonProperty("code")
   private Integer code;
 
   @ApiModelProperty(value = "消息")
+  @JsonProperty("message")
   private String message;
 
   @ApiModelProperty(value = "数据")
+  @JsonProperty("data")
   private T data;
 
   @Override

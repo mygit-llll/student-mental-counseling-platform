@@ -175,7 +175,7 @@ public class JwtUtil {
                 //.signWith(SignatureAlgorithm.RS256, this.rsaUtils.loadPrivateKey())
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 // 使用LZ77算法与哈夫曼编码结合的压缩算法进行压缩
-                .compressWith(CompressionCodecs.DEFLATE)
+                //.compressWith(CompressionCodecs.DEFLATE)
                 .compact();
     // 保存账户 token
     // 因为账户注销后 JWT 本身只要没过期就仍然有效，所以只能通过 redis 缓存来校验有无效

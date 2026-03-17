@@ -1,8 +1,10 @@
 package com.zoctan.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoctan.api.core.response.Result;
 import com.zoctan.api.core.response.ResultGenerator;
 import com.zoctan.api.dto.ConsultationSessionDTO;
+import com.zoctan.api.dto.CreateSessionRequest;
 import com.zoctan.api.entity.Account;
 import com.zoctan.api.entity.ConsultationMessage;
 import com.zoctan.api.entity.ConsultationSession;
@@ -27,17 +29,29 @@ public class ConsultationController {
     /**
      * 创建或获取会话（用户发起）
      */
-    @PostMapping(value = "/sessions",
-            consumes = "text/plain")
-    public Result<Long> createSession(@RequestParam Long counselorId,
-                                      @RequestBody String sessionKeyEncrypted) {
+    @PostMapping("/sessions")
+    public Result<Long> createSession(@RequestBody CreateSessionRequest request) {
         Long currentUserId = ContextUtils.getCurrentAccountId();
         if (currentUserId == null) {
             return ResultGenerator.genFailedResult("未登录");
         }
 
-        Long sessionId = consultationService.createSession(currentUserId, counselorId, sessionKeyEncrypted);
-        return ResultGenerator.genOkResult(sessionId);
+        Long sessionId = consultationService.createSession(
+                currentUserId,
+                request.getCounselorId(),
+                request.getEncryptedKeyForStudent(),
+                request.getEncryptedKeyForCounselor()
+        );
+        //return ResultGenerator.genOkResult(sessionId);
+        Result<Long> result = ResultGenerator.genOkResult(sessionId);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String json = mapper.writeValueAsString(result);
+            System.out.println("FULL JSON: " + json); // 应该包含 data
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -119,7 +133,7 @@ public class ConsultationController {
         dto.setCreatedAt(session.getCreatedAt().toString());
         dto.setUserId(session.getUserId());
         dto.setCounselorId(session.getCounselorId());
-        dto.setSessionKeyEncrypted(session.getSessionKeyEncrypted());
+
         Account user = accountMapper.selectByPrimaryKey(session.getUserId());
         Account counselor = accountMapper.selectByPrimaryKey(session.getCounselorId());
 
@@ -158,12 +172,23 @@ public class ConsultationController {
             return ResultGenerator.genFailedResult("会话不存在");
         }
 
-        // 确保当前用户是该会话的 counselor
-        if (!session.getUserId().equals(currentUserId) && !session.getCounselorId().equals(currentUserId)) {
+        // 判断当前用户是否为会话参与者
+        boolean isStudent = session.getUserId().equals(currentUserId);
+        boolean isCounselor = session.getCounselorId().equals(currentUserId);
+
+        if (!isStudent && !isCounselor) {
             return ResultGenerator.genFailedResult("无权访问该会话的密钥");
         }
 
-        // 返回加密后的会话密钥（Base64 字符串）
-        return ResultGenerator.genOkResult(session.getSessionKeyEncrypted());
+        // 根据身份返回对应的加密密钥
+        String encryptedKey = isStudent
+                ? session.getSessionKeyForStudent()
+                : session.getSessionKeyForCounselor();
+
+        if (encryptedKey == null || encryptedKey.trim().isEmpty()) {
+            return ResultGenerator.genFailedResult("会话密钥尚未生成");
+        }
+
+        return ResultGenerator.genOkResult(encryptedKey);
     }
 }

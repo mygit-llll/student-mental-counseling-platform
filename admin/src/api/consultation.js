@@ -8,16 +8,12 @@ export function getCounselors() {
   })
 }
 
-// 创建新会话
-export function createSession(counselorId, sessionKeyEncrypted) {
+// 创建新会话 传完整 payload
+export function createSession(payload) {
   return request({
     url: '/api/consult/sessions',
     method: 'post',
-    params: { counselorId },
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    data: sessionKeyEncrypted
+    data: payload // { counselorId, encryptedKeyForStudent, encryptedKeyForCounselor }
   })
 }
 

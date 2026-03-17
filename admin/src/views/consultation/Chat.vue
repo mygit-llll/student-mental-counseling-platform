@@ -37,7 +37,7 @@
 import { getMessages, sendMessage, getSessionById, getEncryptedSessionKey } from '@/api/consultation'
 import { decryptAESGCM } from '@/utils/aes-gcm'
 // 私钥解密工具
-import { importPrivateKey, decryptWithPrivateKey } from '@/utils/rsa-decrypt'
+import { importPrivateKey, decryptWithPrivateKey } from '@/utils/rsa'
 
 export default {
   name: 'ConsultationChat',
@@ -86,6 +86,7 @@ export default {
     try {
       // 1. 从后端获取加密的会话密钥（Base64 字符串）
       const encryptedKeyRes = await getEncryptedSessionKey(this.sessionId)
+      console.log('🔍 获取到的“加密会话密钥”:', encryptedKeyRes.data)
       if (encryptedKeyRes.code !== 200 || !encryptedKeyRes.data) {
         throw new Error('未获取到加密的会话密钥')
       }

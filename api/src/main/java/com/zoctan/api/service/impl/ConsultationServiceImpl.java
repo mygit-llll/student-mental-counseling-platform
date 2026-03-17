@@ -45,7 +45,9 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     @Transactional
-    public Long createSession(Long userId, Long counselorId, String sessionKeyEncrypted) {
+    public Long createSession(Long userId, Long counselorId,
+                              String encryptedKeyForStudent,
+                              String encryptedKeyForCounselor) {
         // 检查是否已有进行中的会话
         ConsultationSession existing = sessionMapper.findByUserIdAndCounselorId(userId, counselorId);
         if (existing != null) {
@@ -55,11 +57,13 @@ public class ConsultationServiceImpl implements ConsultationService {
         ConsultationSession session = new ConsultationSession();
         session.setUserId(userId);
         session.setCounselorId(counselorId);
-        session.setSessionKeyEncrypted(sessionKeyEncrypted);
-        session.setStatus(1); // 进行中
-        sessionMapper.insert(session);
+        session.setSessionKeyForStudent(encryptedKeyForStudent);
+        session.setSessionKeyForCounselor(encryptedKeyForCounselor);
+        session.setStatus(1);
         session.setCreatedAt(new Date());
-        sessionMapper.insertSession(session);
+
+        sessionMapper.insert(session);
+
         return session.getId();
     }
 

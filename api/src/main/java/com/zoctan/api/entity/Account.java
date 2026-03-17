@@ -40,4 +40,6 @@ public class Account {
   /** 公钥 **/
   private String publicKey;
 
+  //private String roleName;
+
 }

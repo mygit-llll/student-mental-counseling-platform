@@ -6,9 +6,10 @@
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="counselor_id" property="counselorId"/>
-        <result column="session_key_encrypted" property="sessionKeyEncrypted"/>
         <result column="status" property="status"/>
         <result column="created_at" property="createdAt"/>
+        <result column="session_key_for_student" property="sessionKeyForStudent"/>
+        <result column="session_key_for_counselor" property="sessionKeyForCounselor"/>
     </resultMap>
 
     <select id="findByUserIdAndCounselorId" resultMap="BaseResultMap">
@@ -17,32 +18,18 @@
         ORDER BY created_at DESC LIMIT 1
     </select>
 
-    <select id="findByUserId" resultType="com.zoctan.api.entity.ConsultationSession">
+    <select id="findByUserId" resultMap="BaseResultMap">
         SELECT *
         FROM consultation_session
         WHERE user_id = #{userId}
         ORDER BY created_at DESC
     </select>
 
-    <select id="findByUserIdOrCounselorId" resultType="ConsultationSession">
+    <select id="findByUserIdOrCounselorId" resultMap="BaseResultMap">
         SELECT *
         FROM consultation_session
         WHERE user_id = #{userId} OR counselor_id = #{userId}
+        ORDER BY created_at DESC
     </select>
 
-    <insert id="insertSession" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO consultation_session (
-            user_id,
-            counselor_id,
-            session_key_encrypted,
-            status,
-            created_at
-        ) VALUES (
-                     #{userId},
-                     #{counselorId},
-                     #{sessionKeyEncrypted},
-                     #{status},
-                     #{createdAt}
-                 )
-    </insert>
 </mapper>

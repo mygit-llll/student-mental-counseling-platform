@@ -34,4 +34,26 @@
         ORDER BY r.created_at DESC
     </select>
 
+    <select id="selectByScoreGreaterThan" resultType="com.zoctan.api.entity.UserTestRecord">
+        SELECT *
+        FROM user_test_record
+        WHERE total_score > #{score}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectHighRiskRecordsWithUsername" resultType="com.zoctan.api.entity.UserTestRecord">
+        SELECT
+            r.id,
+            r.user_id AS userId,
+            r.test_id AS testId,
+            r.total_score AS totalScore,
+            r.result_text AS resultText,
+            r.created_at AS createdAt,
+            a.name AS username
+        FROM user_test_record r
+                 LEFT JOIN account a ON r.user_id = a.id
+        WHERE r.total_score > #{threshold}
+        ORDER BY r.created_at DESC
+    </select>
+
 </mapper>

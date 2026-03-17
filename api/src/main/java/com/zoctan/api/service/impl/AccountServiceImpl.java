@@ -8,6 +8,7 @@ import com.zoctan.api.dto.AccountWithRole;
 import com.zoctan.api.dto.AccountWithRolePermission;
 import com.zoctan.api.entity.Account;
 import com.zoctan.api.entity.AccountRole;
+import com.zoctan.api.entity.UserTestRecord;
 import com.zoctan.api.mapper.*;
 import com.zoctan.api.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
   @Resource private PermissionMapper permissionMapper;
   @Resource private PasswordEncoder passwordEncoder;
   @Resource private JwtUtil jwtUtil;
+  @Resource private UserTestRecordMapper userTestRecordMapper;
   // 普通用户角色Id
   private final Long defaultRoleId = 2L;
 
@@ -166,4 +168,10 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
   public Account findByName(String name) {
     return this.accountMapper.findByName(name);
   }
+
+  @Override
+  public AccountWithRole findWithRoleById(Long id) {
+    return this.accountMapper.selectAccountWithRoleById(id);
+  }
+
 }

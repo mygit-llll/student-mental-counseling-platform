@@ -40,3 +40,4 @@ export function getMyTestHistory() {
     method: 'get'
   })
 }
+

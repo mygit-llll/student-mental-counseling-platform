@@ -91,4 +91,24 @@
     <select id="findByName" resultType="com.zoctan.api.entity.Account">
         SELECT id, name, email FROM account WHERE name = #{name}
     </select>
+
+    <select id="selectAccountWithRoleById" resultType="com.zoctan.api.dto.AccountWithRole">
+        SELECT
+            a.id,
+            a.name,
+            a.email,
+            a.register_time AS registerTime,
+            a.login_time AS loginTime,
+            IFNULL(GROUP_CONCAT(r.name), '') AS roleName
+        FROM account a
+                 LEFT JOIN account_role ar ON a.id = ar.account_id
+                 LEFT JOIN role r ON ar.role_id = r.id
+        WHERE a.id = #{id}
+        GROUP BY
+            a.id,
+            a.name,
+            a.email,
+            a.register_time,
+            a.login_time
+    </select>
 </mapper>

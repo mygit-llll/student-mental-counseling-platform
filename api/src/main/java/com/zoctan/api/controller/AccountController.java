@@ -107,6 +107,20 @@ public class AccountController {
     return ResultGenerator.genOkResult(dbAccount);
   }
 
+  /**
+   * 获取指定用户的完整信息（含角色等，用于管理员查看详情）
+   */
+  @PreAuthorize("hasAuthority('account:detail')")
+  @GetMapping("/{id}/detail")
+  public Result<AccountWithRole> getAccountDetail(@PathVariable final Long id) {
+    final AccountWithRole account = this.accountService.findWithRoleById(id);
+    if (account == null) {
+      return ResultGenerator.genFailedResult("用户不存在");
+    }
+    return ResultGenerator.genOkResult(account);
+  }
+
+
   @PreAuthorize("hasAuthority('account:list')")
   @GetMapping
   public Result list(
@@ -225,6 +239,7 @@ public class AccountController {
     this.jwtUtil.invalidRedisToken(principal.getName());
     return ResultGenerator.genOkResult("密码修改成功，请重新登录");
   }
+
   @PostMapping("/public-key")
   public Result<Void> uploadPublicKey(@RequestBody Map<String, String> payload) {
     Long currentUserId = ContextUtils.getCurrentAccountId();

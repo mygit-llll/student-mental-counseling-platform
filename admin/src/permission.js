@@ -1,48 +1,52 @@
 import router from './router'
 import store from './store'
-import NProgress from 'nprogress' // Progress 进度条
-import 'nprogress/nprogress.css'// Progress 进度条样式
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 import { getToken } from '@/utils/token'
 
-const whiteList = ['/login', '/register'] // 白名单,不需要登录的路由
+const whiteList = ['/login', '/register']
 
-router.beforeEach((to, from, next) => {
-  NProgress.start() // 开始Progress
-  // 尝试获取cookie中的token
-  if (getToken()) {
-    // 有token
+router.beforeEach(async(to, from, next) => {
+  NProgress.start()
+
+  const hasToken = getToken()
+
+  if (hasToken) {
     if (to.path === '/login') {
-      // 但下一跳是登陆页
-      // 转到首页
-      next({ path: '/' })
+      // 如果已登录，访问 login 则跳首页
+      next({ path: '/dashboard/index' })
     } else {
-      // 下一跳不是登陆页
-      // VUEX被清除，没有角色名
-      if (store.getters.roleName === null) {
-        // 重新获取用户信息
-        store.dispatch('Detail').then(response => {
-          // 生成路由
-          store.dispatch('GenerateRoutes', response.data).then(() => {
-            router.addRoutes(store.getters.addRouters)
-            next({ ...to })
-          })
-        })
-      } else {
+      // 检查是否已获取用户角色
+      if (store.getters.roleName) {
+        // 已获取，直接放行
         next()
+      } else {
+        try {
+          // 未获取，先拉取用户信息
+          const response = await store.dispatch('Detail')
+          // 动态生成路由
+          await store.dispatch('GenerateRoutes', response.data)
+          // ⚠️ 注意：addRoutes 已废弃，但如果你用 Vue Router 3 可继续用
+          router.addRoutes(store.getters.addRouters)
+          // ✅ 关键：用 next(to) 重新进入当前路由（触发新路由匹配）
+          next({ ...to, replace: true }) // 或直接 next()
+        } catch (error) {
+          // 获取用户信息失败，清除 token 并跳转登录
+          await store.dispatch('LogOut')
+          next(`/login?redirect=${to.path}`)
+        }
       }
     }
   } else {
-    // 如果前往的路径是白名单内的,就可以直接前往
-    if (whiteList.indexOf(to.path) !== -1) {
+    // 无 token
+    if (whiteList.includes(to.path)) {
       next()
     } else {
-      // 如果路径不是白名单内的,而且又没有登录,就转到登录页
-      next('/login')
-      NProgress.done() // 结束Progress
+      next(`/login?redirect=${to.path}`)
     }
   }
 })
 
 router.afterEach(() => {
-  NProgress.done() // 结束Progress
+  NProgress.done()
 })

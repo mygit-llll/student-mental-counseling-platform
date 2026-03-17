@@ -76,4 +76,6 @@ public interface AccountMapper extends MyMapper<Account> {
    * @param name
    */
   Account findByName(String name);
+
+    AccountWithRole selectAccountWithRoleById(Long id);
 }

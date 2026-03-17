@@ -1,30 +1,28 @@
-<!-- Result.vue -->
+<!-- src/views/PsychologicalTest/Result.vue -->
 <template>
   <div class="result-container" v-if="result">
     <el-page-header @back="$router.push('/psychological/test')" content="测试结果" />
 
     <el-card style="margin-top: 20px;">
-      <h2 style="text-align: center; margin-bottom: 24px;">{{ testTitle }}</h2>
+      <h2 style="text-align: center; margin-bottom: 24px;">
+        {{ result.testTitle || '心理测试结果' }}
+      </h2>
 
-      <!-- 分数 -->
       <div class="result-item">
         <label>总分：</label>
         <span class="score">{{ result.totalScore }} 分</span>
       </div>
 
-      <!-- 测试时间 -->
       <div class="result-item">
         <label>完成时间：</label>
-        <span>{{ formatTime(this.result.createdAt) }}</span>
+        <span>{{ formatTime(result.createdAt) }}</span>
       </div>
 
-      <!-- 结果解读 -->
       <div class="result-item" style="margin-top: 24px;">
         <label>结果解读：</label>
         <div class="interpretation" v-html="result.resultText"></div>
       </div>
 
-      <!-- 历史记录入口 -->
       <div style="text-align: center; margin-top: 30px;">
         <el-button @click="$router.push('/psychological/history')">
           查看我的历史记录
@@ -41,38 +39,36 @@ export default {
   name: 'PsychologicalTestResult',
   data() {
     return {
-      testId: null,
-      result: null,
-      testTitle: ''
+      result: null
     }
   },
   async created() {
-    this.testId = Number(this.$route.query.testId)
-    if (!this.testId) {
+    const { testId } = this.$route.query
+
+    if (!testId) {
       this.$message.error('缺少测试ID')
       this.$router.back()
       return
     }
-    await this.fetchResult()
+
+    await this.fetchResultByTestId(Number(testId))
   },
   methods: {
-    async fetchResult() {
+    async fetchResultByTestId(testId) {
       try {
-        const res = await getTestResult(this.testId)
+        const res = await getTestResult(testId)
         if (res.code === 200) {
           this.result = res.data
-          // 如果后端没返回标题，可以额外请求一次 test 信息
-          this.testTitle = res.data.testTitle || '心理测试结果'
         } else {
-          this.$message.error(res.message || '加载结果失败')
-          this.$router.back()
+          throw new Error(res.message || '加载失败')
         }
       } catch (error) {
-        console.error('获取结果失败:', error)
-        this.$message.error('加载失败，请重试')
+        console.error('加载结果失败:', error)
+        this.$message.error(error.message || '加载失败')
         this.$router.back()
       }
     },
+
     formatTime(dateStr) {
       const d = new Date(dateStr)
       const pad = n => n.toString().padStart(2, '0')
@@ -83,6 +79,7 @@ export default {
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .result-container {
   padding: 20px;
   background-color: #f5f7fa;

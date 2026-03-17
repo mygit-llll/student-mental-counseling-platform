@@ -1,21 +1,18 @@
-/**
- * 将 PEM 格式的公钥转换为 CryptoKey
- * @param {string} pem - PEM 格式公钥（带 -----BEGIN PUBLIC KEY----- 头尾）
- * @returns {Promise<CryptoKey>}
- */
+// ===== 导入公钥（PEM → CryptoKey）=====
 export async function importPublicKey(pem) {
-  // 移除头尾和换行
-  const pemContent = pem
-    .replace(/-----BEGIN PUBLIC KEY-----/, '')
-    .replace(/-----END PUBLIC KEY-----/, '')
-    .replace(/\s/g, '')
+  // 移除 PEM 头尾
+  const pemHeader = '-----BEGIN PUBLIC KEY-----'
+  const pemFooter = '-----END PUBLIC KEY-----'
+  const pemContents = pem.replace(pemHeader, '').replace(pemFooter, '').replace(/\s/g, '')
 
-  // Base64 解码为二进制 DER
-  const binaryDer = Uint8Array.from(atob(pemContent), c => c.charCodeAt(0))
+  const binaryDerString = atob(pemContents)
+  const binaryDer = new Uint8Array(binaryDerString.length)
+  for (let i = 0; i < binaryDerString.length; i++) {
+    binaryDer[i] = binaryDerString.charCodeAt(i)
+  }
 
-  // 导入为 CryptoKey
-  return await crypto.subtle.importKey(
-    'spki', // SubjectPublicKeyInfo 格式
+  return crypto.subtle.importKey(
+    'spki',
     binaryDer,
     {
       name: 'RSA-OAEP',
@@ -26,25 +23,65 @@ export async function importPublicKey(pem) {
   )
 }
 
-/**
- * 使用 RSA 公钥加密数据
- * @param {Uint8Array} data - 要加密的原始数据（如 AES 密钥）
- * @param {CryptoKey} publicKey - 已导入的公钥
- * @returns {Promise<string>} 加密结果的 Base64 字符串
- */
+// ===== 导入私钥（PEM → CryptoKey）=====
+export async function importPrivateKey(pem) {
+  const pemHeader = '-----BEGIN PRIVATE KEY-----'
+  const pemFooter = '-----END PRIVATE KEY-----'
+  const pemContents = pem.replace(pemHeader, '').replace(pemFooter, '').replace(/\s/g, '')
+
+  const binaryDerString = atob(pemContents)
+  const binaryDer = new Uint8Array(binaryDerString.length)
+  for (let i = 0; i < binaryDerString.length; i++) {
+    binaryDer[i] = binaryDerString.charCodeAt(i)
+  }
+
+  return crypto.subtle.importKey(
+    'pkcs8',
+    binaryDer,
+    {
+      name: 'RSA-OAEP',
+      hash: 'SHA-256'
+    },
+    true,
+    ['decrypt']
+  )
+}
+
+// ===== 用公钥加密（Uint8Array → ArrayBuffer）=====
 export async function encryptWithPublicKey(data, publicKey) {
-  const encrypted = await crypto.subtle.encrypt(
+  return crypto.subtle.encrypt(
     {
       name: 'RSA-OAEP'
     },
     publicKey,
     data
   )
-  // 转为 Base64 字符串
-  let binary = ''
-  const bytes = new Uint8Array(encrypted)
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i])
+}
+
+// ===== 用私钥解密（ArrayBuffer → Uint8Array）=====
+export async function decryptWithPrivateKey(encryptedData, privateKey) {
+  let buffer
+  if (typeof encryptedData === 'string') {
+    // 假设是 Base64
+    const binaryString = atob(encryptedData)
+    buffer = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      buffer[i] = binaryString.charCodeAt(i)
+    }
+    buffer = buffer.buffer
+  } else if (encryptedData instanceof ArrayBuffer) {
+    buffer = encryptedData
+  } else {
+    throw new Error('decryptWithPrivateKey: input must be Base64 string or ArrayBuffer')
   }
-  return btoa(binary)
+
+  const decrypted = await crypto.subtle.decrypt(
+    {
+      name: 'RSA-OAEP'
+    },
+    privateKey,
+    buffer
+  )
+
+  return new Uint8Array(decrypted)
 }

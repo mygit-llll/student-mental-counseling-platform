@@ -19,6 +19,7 @@
           type="primary"
           size="small"
           @click="startSession(counselor)"
+          :loading="startingSessionId === counselor.id"
         >
           开始咨询
         </el-button>
@@ -33,13 +34,14 @@
 
 <script>
 import { getCounselors, createSession } from '@/api/consultation'
-import { importPublicKey, encryptWithPublicKey } from '@/utils/rsa'
+import { ensureKeyPairExists, importPublicKey, encryptWithPublicKey } from '@/utils/e2ee'
 
 export default {
   name: 'ConsultationList',
   data() {
     return {
       counselors: [],
+      startingSessionId: null,
       defaultAvatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
     }
   },
@@ -48,51 +50,74 @@ export default {
   },
   methods: {
     async loadCounselors() {
-      const res = await getCounselors()
-      if (res.code === 200) {
-        this.counselors = res.data || []
-      } else {
-        this.$message.error('加载咨询师失败')
+      try {
+        const res = await getCounselors()
+        if (res.code === 200) {
+          this.counselors = res.data || []
+        } else {
+          this.$message.error('加载咨询师失败')
+        }
+      } catch (err) {
+        console.error('加载咨询师异常:', err)
+        this.$message.error('网络错误，请重试')
       }
     },
 
     async startSession(counselor) {
+      this.startingSessionId = counselor.id
       try {
-        // 1. 检查 counselor 是否有公钥
-        if (!counselor.publicKey) {
-          this.$message.error(`咨询师 ${counselor.name} 未配置公钥`)
+        // 1. 确保本地有密钥对（也会触发上传公钥）
+        const myKeyPair = await ensureKeyPairExists()
+
+        // 2. 检查对方公钥
+        if (!counselor.publicKey || !myKeyPair.publicKey) {
+          this.$message.error('公钥缺失，无法建立安全会话')
           return
         }
 
-        // 2. 生成 32 字节 AES 会话密钥
+        // 3. 生成会话 AES 密钥 (32 bytes = 256 bits)
         const aesKey = window.crypto.getRandomValues(new Uint8Array(32))
 
-        // 3. 导入 counselor 公钥
-        const publicKey = await importPublicKey(counselor.publicKey)
+        // 4. 加密给咨询师
+        const counselorPubKey = await importPublicKey(counselor.publicKey)
+        const encryptedForCounselor = await encryptWithPublicKey(aesKey, counselorPubKey)
 
-        // 4. 用公钥加密 AES 密钥
-        const encryptedAesKey = await encryptWithPublicKey(aesKey, publicKey)
+        // 5. 加密给自己（学生）
+        const myPubKey = await importPublicKey(myKeyPair.publicKey)
+        const encryptedForStudent = await encryptWithPublicKey(aesKey, myPubKey)
 
-        // 5. 调用后端创建会话
-        const res = await createSession(counselor.id, encryptedAesKey)
+        // 6. 发送给后端（注意：传 Base64 字符串）
+        const payload = {
+          counselorId: counselor.id,
+          encryptedKeyForStudent: arrayBufferToBase64(encryptedForStudent),
+          encryptedKeyForCounselor: arrayBufferToBase64(encryptedForCounselor)
+        }
+
+        const res = await createSession(payload)
         if (res.code !== 200) {
           throw new Error(res.message || '创建会话失败')
         }
 
-        // 6.  将原始 AES 密钥存入 Vuex（临时）
-        this.$store.commit('SET_SESSION_KEY', {
-          sessionId: res.data,
-          key: Array.from(aesKey).map(b => String.fromCharCode(b)).join('')
-        })
-
-        // 7. 跳转到聊天页
-        this.$message.success('会话创建成功')
-        this.$router.push(`/consultation/chat/${res.data}`)
+        this.$message.success('安全会话已创建')
+        const sessionId = res.data
+        this.$router.push(`/consultation/chat/${sessionId}`)
       } catch (error) {
         console.error('创建会话异常:', error)
         this.$message.error('创建失败：' + (error.message || '请重试'))
+      } finally {
+        this.startingSessionId = null
       }
     }
   }
+}
+
+// 工具函数：ArrayBuffer → Base64（用于传输）
+function arrayBufferToBase64(buffer) {
+  let binary = ''
+  const bytes = new Uint8Array(buffer)
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
 }
 </script>

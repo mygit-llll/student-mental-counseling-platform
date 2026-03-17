@@ -6,5 +6,10 @@ import java.util.List;
 
 public interface UserTestRecordService {
     UserTestRecord findUserTestResultByUsernameAndTestId(String username, Long testId);
+
     List<UserTestRecord> findUserTestHistoryByUsername(String username);
+
+    List<UserTestRecord> findRecordsWithScoreAbove(Integer score);
+
+    List<UserTestRecord> findHighRiskRecordsWithUsername(Integer threshold);
 }

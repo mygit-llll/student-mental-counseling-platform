@@ -16,6 +16,8 @@ public class UserTestRecord {
     private String resultText;
     private Date createdAt;
 
+    private String username;
+
     // 用于接收 JOIN 查询中的 psychological_test.title
     private String testTitle;
 
