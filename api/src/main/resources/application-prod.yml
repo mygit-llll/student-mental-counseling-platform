@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/psych?useUnicode=true&useSSL=false&allowMultiQueries=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
     # root
-    username: root #MyEnc({btTSNb3PH7saU2yQ7FeCsQ==})
+    username:  #MyEnc({btTSNb3PH7saU2yQ7FeCsQ==})
     # root
     password:  #MyEnc({VuLn6kkmZXt1402C9w9xUA==})
     driver-class-name: com.mysql.cj.jdbc.Driver
