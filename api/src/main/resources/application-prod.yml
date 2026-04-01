@@ -7,7 +7,7 @@ spring:
     # root
     username: root #MyEnc({btTSNb3PH7saU2yQ7FeCsQ==})
     # root
-    password: Lyx102518 #MyEnc({VuLn6kkmZXt1402C9w9xUA==})
+    password:  #MyEnc({VuLn6kkmZXt1402C9w9xUA==})
     driver-class-name: com.mysql.cj.jdbc.Driver
   cache:
     type: redis
