@@ -1,0 +1,186 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="29.2.7">
+  <diagram name="第 1 页" id="nR4luQQz_ov80Js0ZXa5">
+    <mxGraphModel dx="1456" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=宋体;fontSize=16;" value="基于SpringBoot和AES加密的大学生心理辅导平台设计与实现" vertex="1">
+          <mxGeometry height="80" width="440" x="227" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-2" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="447" y="225" as="sourcePoint" />
+            <mxPoint x="446.5" y="185" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-26" edge="1" parent="1" source="MZ8SjUNn8gQZopE4QYVa-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="MZ8SjUNn8gQZopE4QYVa-13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" value="&lt;font face=&quot;宋体&quot;&gt;用户模块&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="107" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-25" edge="1" parent="1" source="MZ8SjUNn8gQZopE4QYVa-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="MZ8SjUNn8gQZopE4QYVa-17" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="447" y="355" />
+              <mxPoint x="477" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" value="&lt;font face=&quot;宋体&quot;&gt;咨询师模块&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="387" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-24" edge="1" parent="1" source="MZ8SjUNn8gQZopE4QYVa-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="MZ8SjUNn8gQZopE4QYVa-20" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=宋体;fontSize=16;" value="管理员模块" vertex="1">
+          <mxGeometry height="60" width="120" x="667" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-6" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="167" y="225" as="sourcePoint" />
+            <mxPoint x="727" y="225" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-7" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="166.5" y="225" as="sourcePoint" />
+            <mxPoint x="166.5" y="265" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-8" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="446.5" y="225" as="sourcePoint" />
+            <mxPoint x="446.5" y="265" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-9" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="726.5" y="225" as="sourcePoint" />
+            <mxPoint x="726.5" y="265" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=宋体;align=center;fontSize=16;" value="用户注册" vertex="1">
+          <mxGeometry height="200" width="40" x="7" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" value="&lt;font face=&quot;宋体&quot;&gt;用户登录&lt;/font&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="67" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;心理测评&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="127" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;在线咨询&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="187" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;心理健康知识浏览&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="247" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;个人中心&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="307" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;咨询记录填写&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="397" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;咨询统计&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="457" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&amp;lt;br/&amp;gt;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;用户管理&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="607" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&amp;lt;br/&amp;gt;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;咨询师管理&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="667" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;系统公告发布&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="727" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;mso-spacerun:&#39;yes&#39;;font-family:宋体;mso-ascii-font-family:&#39;Times New Roman&#39;;&#xa;mso-hansi-font-family:&#39;Times New Roman&#39;;font-size:12.0000pt;mso-font-kerning:1.0000pt;&quot;&gt;&lt;font face=&quot;宋体&quot;&gt;敏感数据监控&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="200" width="40" x="787" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-27" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="627" y="355" as="sourcePoint" />
+            <mxPoint x="727" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-28" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="207" y="355" as="sourcePoint" />
+            <mxPoint x="327" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-29" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="27" y="355" as="sourcePoint" />
+            <mxPoint x="167" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-30" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="747" y="355" as="sourcePoint" />
+            <mxPoint x="807" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-31" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="626.5" y="355" as="sourcePoint" />
+            <mxPoint x="626.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-32" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="686.5" y="355" as="sourcePoint" />
+            <mxPoint x="686.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-33" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="806.5" y="355" as="sourcePoint" />
+            <mxPoint x="806.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-34" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="416.5" y="355" as="sourcePoint" />
+            <mxPoint x="416.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-35" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="326.5" y="355" as="sourcePoint" />
+            <mxPoint x="326.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-36" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="266.5" y="355" as="sourcePoint" />
+            <mxPoint x="266.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-37" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="146.5" y="355" as="sourcePoint" />
+            <mxPoint x="146.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-38" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="86.5" y="355" as="sourcePoint" />
+            <mxPoint x="86.5" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-39" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="27" y="355" as="sourcePoint" />
+            <mxPoint x="27" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MZ8SjUNn8gQZopE4QYVa-40" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="416" y="355" as="sourcePoint" />
+            <mxPoint x="447" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
